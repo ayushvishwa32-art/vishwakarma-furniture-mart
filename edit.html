@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vishwakarma Furniture Mart – Product Manager</title>
+<style>
+:root{--b:#3a1f12;--g:#c99a3d;--c:#fff8ec;--l:#f7efe2}*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans Devanagari","Mangal",Arial,sans-serif;background:var(--c);color:#2d1b10}.wrap{max-width:1100px;margin:25px auto;padding:15px}.box{background:#fff;padding:24px;border-radius:20px;box-shadow:0 8px 30px #0001;margin-bottom:18px}h1,h2{color:var(--b)}h1{margin-top:0}label{display:block;font-weight:800;margin:12px 0 6px}input,textarea,select{width:100%;padding:11px;border:1px solid #d8c8b5;border-radius:10px;font-size:16px;background:#fff}textarea{resize:vertical}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.btn{border:0;border-radius:999px;padding:11px 18px;margin:10px 8px 0 0;font-weight:800;cursor:pointer;background:var(--b);color:#fff}.gold{background:var(--g);color:#25150c}.light{background:#eee;color:#2d1b10}.danger{background:#a22}.note{background:#fff7e9;padding:13px;border-radius:12px}.status{padding:12px;border-radius:12px;background:#eef7ee;margin-top:12px;display:none}.product-row{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;border:1px solid #ead9bf;border-radius:14px;padding:10px;margin:10px 0}.thumb{width:110px;height:80px;object-fit:cover;border-radius:10px;background:#f4eadb}.muted{color:#765f51}.small{font-size:.9rem}.hidden{display:none}.preview{width:100%;height:520px;border:1px solid #ddcbb3;border-radius:14px;background:#fff}.actions{display:flex;flex-wrap:wrap;gap:5px}@media(max-width:700px){.grid{grid-template-columns:1fr}.product-row{grid-template-columns:75px 1fr}.product-row .actions{grid-column:1/-1}.thumb{width:75px;height:65px}}
+</style></head><body>
+<div class="wrap">
+<div class="box"><h1>विश्वकर्मा फर्नीचर मार्ट — Product Manager</h1>
+<p class="note"><b>कैसे काम करेगा:</b> पहले अपनी वर्तमान <b>index.html</b> चुनें। फिर उत्पाद जोड़ें/बदलें। अंत में <b>Updated Website Download</b> दबाकर नई index.html डाउनलोड करें और उसे GitHub में पुरानी index.html की जगह upload करें।</p>
+<label>अपनी वर्तमान index.html चुनें</label><input id="siteFile" type="file" accept=".html,.htm,text/html">
+<div id="status" class="status"></div></div>
+
+<div class="box"><h2>दुकान की जानकारी</h2><div class="grid">
+<div><label>दुकान का नाम</label><input id="name"></div><div><label>स्थान</label><input id="place"></div>
+<div><label>मोबाइल 1</label><input id="p1"></div><div><label>मोबाइल 2</label><input id="p2"></div>
+<div><label>पूरा पता</label><input id="addr"></div><div><label>Tagline</label><input id="tag"></div>
+<div style="grid-column:1/-1"><label>About Us</label><textarea id="about" rows="4"></textarea></div></div></div>
+
+<div class="box"><h2>➕ नया Product जोड़ें</h2><div class="grid">
+<div><label>Product Name *</label><input id="pn" placeholder="जैसे: 5 Seater Sofa"></div>
+<div><label>Category *</label><input id="pc" list="cats" placeholder="Furniture / Sofa / Bed..."><datalist id="cats"><option>Furniture</option><option>Sofa & Chairs</option><option>Bed</option><option>Almirah</option><option>Table</option><option>Door</option><option>Electronics</option><option>Hardware</option><option>Paint</option><option>Other</option></datalist></div>
+<div><label>Price</label><input id="pp" placeholder="25000"></div><div><label>Offer Price</label><input id="po" placeholder="22999"></div>
+<div><label>Material</label><input id="pm" placeholder="Sheesham Wood"></div><div><label>Size</label><input id="ps" placeholder="6 × 3 Feet"></div>
+<div style="grid-column:1/-1"><label>Description</label><textarea id="pd" rows="3" placeholder="Product की छोटी और साफ जानकारी"></textarea></div>
+<div style="grid-column:1/-1"><label>Product Photo</label><input id="pi" type="file" accept="image/*"><p class="muted small">फोटो अपने-आप छोटा करके website के लिए तैयार होगी।</p></div></div>
+<div class="actions"><button class="gold" onclick="addProduct()">➕ Product जोड़ें</button><button class="light" onclick="clearForm()">Form साफ करें</button></div></div>
+
+<div class="box"><h2>📦 Product List</h2><div id="productList"><p class="muted">अभी कोई product नहीं है।</p></div></div>
+
+<div class="box"><h2>🚀 Website तैयार करें</h2><p class="note">Product बदलने के बाद <b>Updated Website Download</b> दबाएँ। फिर GitHub repository में <b>index.html</b> को replace/overwrite करें।</p>
+<button class="gold" onclick="downloadSite()">⬇️ Updated Website Download</button><button class="btn" onclick="previewSite()">👁️ Preview Website</button><button class="light" onclick="resetProducts()">सभी Products हटाएँ</button>
+<div style="margin-top:15px"><iframe id="preview" class="preview" title="Website Preview"></iframe></div></div>
+</div>
+<script>
+let siteHtml=''; let products=[]; let editIndex=-1;
+const $=id=>document.getElementById(id);
+function msg(t,good=true){$('status').textContent=t;$('status').style.display='block';$('status').style.background=good?'#eef7ee':'#fff0f0';}
+$('siteFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{siteHtml=r.result;loadFromHtml(siteHtml);msg('index.html सफलतापूर्वक लोड हो गई। अब Products जोड़ सकते हैं।')};r.readAsText(f)});
+function loadFromHtml(html){const d=new DOMParser().parseFromString(html,'text/html');
+ $('name').value=d.getElementById('shopName')?.textContent.trim()||'विश्वकर्मा फर्नीचर मार्ट';$('place').value=d.getElementById('brandPlace')?.textContent.trim()||'सिराली';$('p1').value=d.getElementById('phone1')?.textContent.trim()||'9039534072';$('p2').value=d.getElementById('phone2')?.textContent.trim()||'9399475499';$('addr').value=(d.getElementById('address')?.textContent||'').replace(/^📍\s*/,'').trim();$('tag').value=d.getElementById('tagline')?.textContent.trim()||'';$('about').value=d.getElementById('aboutText')?.textContent.trim()||'';
+ try{products=JSON.parse(d.getElementById('product-data')?.textContent||'[]')}catch(e){products=[]}renderProducts();}
+function resizeImage(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const max=1000,scale=Math.min(1,max/img.width,max/img.height),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.82))};img.onerror=reject;img.src=r.result};r.onerror=reject;r.readAsDataURL(file)})}
+async function addProduct(){const name=$('pn').value.trim(),cat=$('pc').value.trim();if(!name||!cat){alert('Product Name और Category जरूरी हैं।');return}let image='';if($('pi').files[0]){try{image=await resizeImage($('pi').files[0])}catch(e){alert('फोटो पढ़ने में समस्या हुई।');return}}else if(editIndex>=0){image=products[editIndex].image||''}
+const p={name,category:cat,price:$('pp').value.trim(),offer:$('po').value.trim(),material:$('pm').value.trim(),size:$('ps').value.trim(),description:$('pd').value.trim(),image};if(editIndex>=0){products[editIndex]=p;editIndex=-1}else products.push(p);renderProducts();clearForm();msg('Product list अपडेट हो गई। अब Updated Website Download कर सकते हैं।')}
+function editProduct(i){const p=products[i];editIndex=i;$('pn').value=p.name;$('pc').value=p.category;$('pp').value=p.price||'';$('po').value=p.offer||'';$('pm').value=p.material||'';$('ps').value=p.size||'';$('pd').value=p.description||'';window.scrollTo({top:document.querySelector('.box:nth-of-type(3)').offsetTop-10,behavior:'smooth'})}
+function deleteProduct(i){if(confirm('यह Product हटाएँ?')){products.splice(i,1);renderProducts();msg('Product हटाया गया।')}}
+function renderProducts(){const el=$('productList');if(!products.length){el.innerHTML='<p class="muted">अभी कोई product नहीं है। ऊपर से नया Product जोड़ें।</p>';return}el.innerHTML=products.map((p,i)=>`<div class="product-row"><img class="thumb" src="${p.image||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="100%" height="100%" fill="#f4eadb"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#8a6537" font-size="20">No Photo</text></svg>')}" alt=""><div><b>${esc(p.name)}</b><div class="small muted">${esc(p.category)}${p.price?' • ₹'+esc(p.price):''}${p.offer?' • Offer ₹'+esc(p.offer):''}</div></div><div class="actions"><button class="light" onclick="editProduct(${i})">✏️ Edit</button><button class="danger" onclick="deleteProduct(${i})">🗑️ Delete</button></div></div>`).join('')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function clearForm(){['pn','pc','pp','po','pm','ps','pd','pi'].forEach(id=>$(id).value='');editIndex=-1}
+function resetProducts(){if(confirm('सभी Products हटाएँ?')){products=[];renderProducts();}}
+function buildSite(){if(!siteHtml){alert('पहले अपनी current index.html चुनें।');return null}const d=new DOMParser().parseFromString(siteHtml,'text/html');
+ const name=$('name').value.trim(),place=$('place').value.trim(),p1=$('p1').value.trim(),p2=$('p2').value.trim(),addr=$('addr').value.trim(),tag=$('tag').value.trim(),about=$('about').value.trim();
+ d.title.textContent=name+' | '+place; if(d.getElementById('brandName'))d.getElementById('brandName').innerHTML=esc(name)+'<br><small id="brandPlace">'+esc(place)+'</small>'; if(d.getElementById('shopName'))d.getElementById('shopName').textContent=name;if(d.getElementById('tagline'))d.getElementById('tagline').textContent=tag;if(d.getElementById('phone1')){d.getElementById('phone1').textContent=p1;d.getElementById('phone1').href='tel:'+p1}if(d.getElementById('phone2')){d.getElementById('phone2').textContent=p2;d.getElementById('phone2').href='tel:'+p2}if(d.getElementById('address'))d.getElementById('address').textContent='📍 '+addr;if(d.getElementById('aboutText'))d.getElementById('aboutText').textContent=about;if(d.getElementById('footName'))d.getElementById('footName').textContent=name+', '+place;const wa='https://wa.me/91'+p1.replace(/\D/g,'');if(d.getElementById('wa'))d.getElementById('wa').href=wa;if(d.getElementById('callTop'))d.getElementById('callTop').href='tel:'+p1;
+ let pd=d.getElementById('product-data');if(!pd){pd=d.createElement('script');pd.id='product-data';pd.type='application/json';d.body.appendChild(pd)}pd.textContent=JSON.stringify(products).replace(/</g,'\\u003c');return '<!doctype html>\n'+d.documentElement.outerHTML;}
+function downloadSite(){const out=buildSite();if(!out)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'text/html;charset=utf-8'}));a.download='index.html';a.click();msg('नई index.html तैयार है। अब इसे GitHub में पुरानी index.html की जगह upload करें।')}
+function previewSite(){const out=buildSite();if(!out)return;$('preview').srcdoc=out;window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+</script></body></html>
