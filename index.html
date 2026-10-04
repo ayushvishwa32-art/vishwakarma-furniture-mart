@@ -22,6 +22,7 @@ nav{display:flex;gap:18px}nav a{color:#fff}.hero{background:linear-gradient(135d
 footer{background:#1e1009;color:#dfc9a8;text-align:center;padding:24px 15px}
 @media(max-width:800px){.hero-inner{grid-template-columns:1fr;text-align:center}.cards{grid-template-columns:repeat(2,1fr)}nav{display:none}}
 @media(max-width:500px){.cards{grid-template-columns:1fr}}
+.products-toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:0 auto 28px}.products-toolbar input,.products-toolbar select{padding:12px 14px;border:1px solid #dec9aa;border-radius:999px;background:#fff;font:inherit;min-width:220px}.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.product-card{background:#fff;border:1px solid #ead9bf;border-radius:20px;overflow:hidden;box-shadow:0 8px 25px #4a291414;display:flex;flex-direction:column}.product-img{width:100%;height:220px;object-fit:cover;background:#f4eadb}.product-body{padding:18px;display:flex;flex-direction:column;gap:7px;flex:1}.product-cat{font-size:.85rem;color:#8a6537;font-weight:800}.product-card h3{margin:0;color:var(--b);font-size:1.25rem}.product-desc{margin:0;color:#6e5a4e}.price{font-size:1.2rem;font-weight:900;color:#7a4b16}.offer{font-size:.95rem;color:#b36d19;font-weight:800}.product-meta{font-size:.9rem;color:#6e5a4e}.product-actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}.product-actions a{padding:10px 13px;border-radius:999px;font-weight:800;font-size:.9rem;background:#c99a3d;color:#25150c}.product-actions a.secondary{background:#3a1f12;color:#fff}.empty-products{text-align:center;padding:35px;background:#fff;border:1px dashed #cbb18d;border-radius:18px;color:#765f51}.admin-note{font-size:.9rem;text-align:center;color:#8a7566;margin-top:22px}@media(max-width:900px){.product-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.product-grid{grid-template-columns:1fr}.product-img{height:200px}}
 </style>
 </head>
 <body>
@@ -43,6 +44,10 @@ footer{background:#1e1009;color:#dfc9a8;text-align:center;padding:24px 15px}
 <div class="card"><div class="icon">🔧</div><h3>हार्डवेयर</h3><p>निर्माण और घर के काम के लिए हार्डवेयर सामान।</p></div>
 <div class="card"><div class="icon">🎨</div><h3>पेंट</h3><p>घर और दुकान की सजावट के लिए पेंट सामग्री।</p></div>
 </div></div></section>
+<section id="product-catalog"><div class="container"><div class="title"><h2>हमारे उत्पाद</h2><p>उत्पाद देखें और कीमत/उपलब्धता के लिए सीधे WhatsApp पर पूछें</p></div>
+<div class="products-toolbar"><input id="productSearch" type="search" placeholder="🔎 उत्पाद खोजें..." oninput="renderProducts()"><select id="productCategory" onchange="renderProducts()"><option value="">सभी कैटेगरी</option></select></div>
+<div id="productGrid" class="product-grid"></div><div id="emptyProducts" class="empty-products" style="display:none">अभी उत्पाद सूची में नहीं जोड़े गए हैं। जल्द ही नए उत्पाद उपलब्ध होंगे।</div>
+<p class="admin-note">उत्पाद जोड़ने/बदलने के लिए Website Editor का उपयोग करें।</p></div></section>
 <section class="about" id="about"><div class="container"><div class="title"><h2>हमारे बारे में</h2></div>
 <div class="aboutbox"><p id="aboutText">विश्वकर्मा फर्नीचर मार्ट, सिराली में ग्राहकों को घर और व्यवसाय से जुड़ी आवश्यक वस्तुएँ उपलब्ध कराने का प्रयास करता है।</p></div></div></section>
 <section class="contact" id="contact"><div class="container"><h2>संपर्क करें</h2>
@@ -51,5 +56,15 @@ footer{background:#1e1009;color:#dfc9a8;text-align:center;padding:24px 15px}
 <a class="btn" id="wa" href="https://wa.me/919039534072">💬 WhatsApp करें</a>
 </div></section>
 <footer>© <span id="year"></span> <span id="footName">विश्वकर्मा फर्नीचर मार्ट, सिराली</span><br><small>Furniture • Electronics • Hardware • Paint</small></footer>
-<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+<script id="product-data" type="application/json">[]</script>
+<script>
+const PRODUCT_DATA = JSON.parse(document.getElementById('product-data').textContent || '[]');
+function waLink(product){const msg=encodeURIComponent('नमस्ते, मुझे '+product.name+' के बारे में जानकारी चाहिए। कृपया कीमत और उपलब्धता बताएं।');return 'https://wa.me/919039534072?text='+msg;}
+function renderProducts(){
+ const grid=document.getElementById('productGrid'), empty=document.getElementById('emptyProducts'), q=(document.getElementById('productSearch').value||'').toLowerCase().trim(), cat=document.getElementById('productCategory').value;
+ const items=PRODUCT_DATA.filter(p=>(!cat||p.category===cat)&&(!q||[p.name,p.category,p.description,p.material,p.size].join(' ').toLowerCase().includes(q)));
+ grid.innerHTML=items.map(p=>`<article class="product-card"><img class="product-img" src="${p.image||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="100%" height="100%" fill="#f4eadb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#8a6537" font-size="34">Product Photo</text></svg>')}" alt="${escHtml(p.name)}" loading="lazy"><div class="product-body"><div class="product-cat">${escHtml(p.category||'अन्य')}</div><h3>${escHtml(p.name)}</h3>${p.description?`<p class="product-desc">${escHtml(p.description)}</p>`:''}${p.price?`<div class="price">₹${escHtml(p.price)}</div>`:''}${p.offer?`<div class="offer">ऑफर: ₹${escHtml(p.offer)}</div>`:''}${p.material||p.size?`<div class="product-meta">${p.material?'सामग्री: '+escHtml(p.material):''}${p.material&&p.size?' • ':''}${p.size?'साइज: '+escHtml(p.size):''}</div>`:''}<div class="product-actions"><a href="${waLink(p)}" target="_blank" rel="noopener">💬 WhatsApp</a><a class="secondary" href="tel:9039534072">📞 कॉल करें</a></div></div></article>`).join(''); empty.style.display=items.length?'none':'block';}
+function escHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+(function(){const cats=[...new Set(PRODUCT_DATA.map(p=>p.category).filter(Boolean))].sort();const sel=document.getElementById('productCategory');cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)});document.getElementById('year').textContent=new Date().getFullYear();renderProducts();})();
+</script>
 </body></html>
